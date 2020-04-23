@@ -1,0 +1,9 @@
+repositories {
+    maven {
+        url "https://raw.githubusercontent.com/vibes/android-sdk-repository/releases/"
+    }
+}
+
+dependencies {
+     implementation "com.vibes.vibes:vibes:4.0.2"
+}
