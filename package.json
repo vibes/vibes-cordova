@@ -1,0 +1,26 @@
+{
+    "name": "vibes-cordova",
+    "displayName": "VibesPlugin",
+    "version": "1.0.0",
+    "description": "The cordova plugin for the Vibes Mobile SDKs",
+    "keywords": [
+        "ecosystem:cordova",
+        "cordova-android",
+        "cordova-ios",
+        "notifications",
+        "push"
+    ],
+    "author": "Vibes Push Team",
+    "license": "Apache-2.0",
+    "cordova": {
+        "id": "vibes-cordova",
+        "platforms": [
+            "android",
+            "ios"
+        ]
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/vibes/vibes-cordova.git"
+    }
+}
