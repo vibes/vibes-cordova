@@ -1,0 +1,14 @@
+# Android/IntelliJ
+#
+build/
+.idea
+.gradle
+local.properties
+*.iml
+src/android/gradle/
+src/android/gradlew/
+src/android/gradlew.bat
+src/android/.gradle
+src/android/.settings
+src/android/.project
+.vscode/
