@@ -1,0 +1,122 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget xmlns="http://www.w3.org/ns/widgets"
+    xmlns:cdv="http://cordova.apache.org/ns/1.0"
+    id="vibes-cordova"
+    version="1.3.0">
+    <name>Vibes</name>
+    <description>
+        The cordova plugin for the Vibes Mobile SDKs
+    </description>
+    <author email="pushnotifications@vibes.com" href="http://www.vibes.com">
+        Vibes Push Team
+    </author>
+    <license>MIT</license>
+    <keywords>cordova,vibes,push,sdk</keywords>
+    <repo>https://github.com/VibesDev/vibes-cordova.git</repo>
+
+    <preference name="VIBES_APP_ID" />
+	<preference name="VIBES_API_URL" default="https://public-api.vibescm.com/mobile_apps" />
+    <preference name="FCM_VERSION" default="20.0.+"/>
+    <engines>
+        <engine name="cordova" version=">=11.0.0"/>
+        <engine name="cordova-android" version=">=11.0.0"/>
+    </engines>
+
+    <content src="index.html" />
+    <asset src="www/vibes.js" target="js/vibes.js" />
+    <js-module name="Vibes" src="www/vibes.js">
+        <clobbers target="Vibes" />
+    </js-module>
+
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="VibesPlugin">
+                <param name="android-package" value="com.vibes.push.cordova.plugin.VibesPlugin"/>
+                <param name="onload" value="true"/>
+            </feature>
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/manifest">
+            <uses-permission android:name="android.permission.INTERNET"/>
+            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+        </config-file>
+        <config-file target="AndroidManifest.xml" parent="/manifest/application">
+            <meta-data android:name="vibes_app_id" android:value="$VIBES_APP_ID" />
+            <meta-data android:name="vibes_api_url" android:value="$VIBES_API_URL" />
+            <service android:name="com.vibes.push.cordova.plugin.FMS" android:exported="false">
+                <intent-filter>
+                    <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                </intent-filter>
+            </service>
+            <receiver android:name="com.vibes.push.cordova.plugin.CordovaReceiver" android:exported="false">
+                <intent-filter>
+                        <category android:name="${applicationId}" />
+
+                        <action android:name="com.vibes.action.push.OPENED" />
+                </intent-filter>
+            </receiver>
+            <activity android:name="com.vibes.push.cordova.plugin.ClichthruActivity" android:exported="true">
+                <intent-filter>
+                    <action android:name="com.vibes.action.push.OPENED" />
+                    <category android:name="${applicationId}" />
+                </intent-filter>
+            </activity>
+        </config-file>
+        <source-file src="src/android/com/vibes/push/cordova/plugin/VibesPlugin.java" target-dir="src/com/vibes/push/cordova/plugin" />
+        <source-file src="src/android/com/vibes/push/cordova/plugin/FMS.java" target-dir="src/com/vibes/push/cordova/plugin" />
+        <source-file src="src/android/com/vibes/push/cordova/plugin/SharedPrefsManager.java" target-dir="src/com/vibes/push/cordova/plugin" />
+        <source-file src="src/android/com/vibes/push/cordova/plugin/PrefsManager.java" target-dir="src/com/vibes/push/cordova/plugin" />
+        <source-file src="src/android/com/vibes/push/cordova/plugin/CordovaReceiver.java" target-dir="src/com/vibes/push/cordova/plugin" />
+        <source-file src="src/android/com/vibes/push/cordova/plugin/PluginDateFormatter.java" target-dir="src/com/vibes/push/cordova/plugin" />
+        <source-file src="src/android/com/vibes/push/cordova/plugin/ClichthruActivity.java" target-dir="src/com/vibes/push/cordova/plugin" />
+        <source-file src="src/android/com/vibes/push/cordova/plugin/VibesCordovaNotificationFactory.java" target-dir="src/com/vibes/push/cordova/plugin" />
+
+        <framework custom="true" src="src/android/build.gradle" type="gradleReference" />
+        <framework src="me.leolin:ShortcutBadger:1.1.17@aar"/>
+        <framework src="com.google.firebase:firebase-messaging:$FCM_VERSION"/>
+        <framework src="com.google.firebase:firebase-auth:19.2.0"/>
+        <framework src="com.google.firebase:firebase-core:16.0.9"/>
+        <dependency id="phonegap-plugin-multidex" version="~1.0.0"/>
+    </platform>
+    <platform name="ios">
+        <allow-intent href="itms:*" />
+        <allow-intent href="itms-apps:*" />
+        <allow-intent href="http://*/*" />
+        <allow-intent href="https://*/*" />
+        <podspec>
+            <config>
+                <source url="https://github.com/CocoaPods/Specs.git"/>
+            </config>
+            <pods use-frameworks="true">
+                <pod name="VibesPush" git="https://github.com/vibes/push-sdk-ios.git" tag="4.4.2" />
+            </pods>
+        </podspec>
+        <config-file target="*-Info.plist" parent="VibesAppId">
+            <string>$VIBES_APP_ID</string>
+        </config-file>
+        <config-file target="*-Info.plist" parent="VibesAppURL">
+            <string>$VIBES_API_URL</string>
+        </config-file>
+        <config-file target="*-Info.plist" parent="UIBackgroundModes">
+            <array>
+                <string>remote-notification</string>
+            </array>
+        </config-file>
+    <config-file target="*-Debug.plist" parent="aps-environment">
+      <string>development</string>
+    </config-file>
+    <config-file target="*-Release.plist" parent="aps-environment">
+      <string>production</string>
+    </config-file>
+		<config-file parent="/*" target="config.xml">
+			<feature name="VibesPlugin">
+				<param name="ios-package" value="VibesPlugin" />
+                <param name="onload" value="true"/>
+			</feature>
+		</config-file>
+        <header-file src="src/ios/AppDelegate+notification.h" />
+        <source-file src="src/ios/AppDelegate+notification.m" />
+		<source-file src="src/ios/VibesPlugin.swift" />
+        <source-file src="src/ios/VibesClient.swift" />
+        <source-file src="src/ios/Configuration.swift" />
+	</platform>
+</widget>
